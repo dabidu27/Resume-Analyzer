@@ -5,5 +5,6 @@ urlpatterns = [
 
     path('', views.home),
     path('ping/', views.ping),
-    path('analyze/', views.analyze)
+    path('analyze/', views.analyze),
+    path('analyses/', views.analyses_list)
 ]

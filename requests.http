@@ -6,3 +6,6 @@ Content-Type: application/json
   "resume": "python django flask api",
   "job": "django developer python api"
 }
+
+### List all analyses
+GET http://127.0.0.1:8000/analyses/

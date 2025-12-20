@@ -3,6 +3,7 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 from .services.analysis import analyze_resume
+from .models import ResumeAnalyzer
 
 # Create your views here.
 def home(request):
@@ -22,10 +23,28 @@ def analyze(request):
     resume = data.get('resume')
     job = data.get('job')
 
-    if not resume or not data:
+    if not resume or not job:
         return JsonResponse({'error': 'Missing data'}, status = 400)
     
-    score = analyze_resume(resume, job)
+    score, matched_keywords = analyze_resume(resume, job)
+
+    analysis = ResumeAnalyzer.objects.create(resume_text = resume, job_text = job, match_score = score, matched_keywords = matched_keywords)
     
-    return JsonResponse({'match_score': score})
+    return JsonResponse({'analysis_id': analysis.id, 'match_score': score, 'matched_keywords': matched_keywords})
+
+def analyses_list(request):
+
+    if request.method != 'GET':
+        return JsonResponse({'error': 'GET Required'}, status = 405)
+    
+    analyses = ResumeAnalyzer.objects.all().order_by('-created_at') #the - means descending order
+
+    data = []
+    for analysis in analyses:
+
+        data.append({'id': analysis.id, 'match_score': analysis.match_score, 'matched_keywords': analysis.matched_keywords, 'created_at': analysis.created_at.isoformat()})
+
+    return JsonResponse(data, safe=False) #safe constrols if only dict cand be JSON serialized
+
+
 

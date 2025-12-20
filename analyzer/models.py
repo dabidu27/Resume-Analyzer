@@ -4,7 +4,7 @@ from django.db import models
 
 class ResumeAnalyzer(models.Model):
 
-    resume = models.TextField()
+    resume_text = models.TextField()
     job_text = models.TextField()
     match_score = models.IntegerField()
     matched_keywords = models.JSONField()
