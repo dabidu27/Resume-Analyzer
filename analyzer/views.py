@@ -25,7 +25,7 @@ def analyze(request):
     if not resume or not data:
         return JsonResponse({'error': 'Missing data'}, status = 400)
     
-    score = 
+    score = analyze_resume(resume, job)
     
     return JsonResponse({'match_score': score})
 
