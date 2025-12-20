@@ -46,5 +46,17 @@ def analyses_list(request):
 
     return JsonResponse(data, safe=False) #safe constrols if only dict cand be JSON serialized
 
+def analyses_list_by_id(request, analysis_id):
 
+    if request.method != 'GET':
+        return JsonResponse({'error': 'GET required'}, status = 405)
+    
+    try:
+        analysis = ResumeAnalyzer.objects.get(id = analysis_id)
+    except ResumeAnalyzer.DoesNotExist:
+        return JsonResponse({'error': 'Object not found'}, status = 404)
+
+    data = {'id': analysis.id, 'match_score': analysis.match_score, 'matched_keywords': analysis.matched_keywords, 'created_at': analysis.created_at.isoformat()}
+
+    return JsonResponse(data)
 

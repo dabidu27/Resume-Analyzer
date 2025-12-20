@@ -9,3 +9,6 @@ Content-Type: application/json
 
 ### List all analyses
 GET http://127.0.0.1:8000/analyses/
+
+### Get analysis by ID
+GET http://127.0.0.1:8000/analyses/1/
