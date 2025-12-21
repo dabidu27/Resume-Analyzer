@@ -4,6 +4,9 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from .services.analysis import analyze_resume
 from .models import ResumeAnalyzer
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .serializers import ResumeAnalyzerSerializer
 
 # Create your views here.
 def home(request):
@@ -12,16 +15,11 @@ def home(request):
 def ping(request):
     return JsonResponse({'status': 200, 'message': 'Server is running'})
 
-@csrf_exempt
+@api_view(['POST'])
 def analyze(request):
 
-    if request.method != 'POST':
-        return JsonResponse({'error': 'Post required'}, status = 405)
-    
-    data = json.loads(request.body)
-
-    resume = data.get('resume')
-    job = data.get('job')
+    resume = request.data.get('resume')
+    job = request.data.get('job')
 
     if not resume or not job:
         return JsonResponse({'error': 'Missing data'}, status = 400)
@@ -30,23 +28,31 @@ def analyze(request):
 
     analysis = ResumeAnalyzer.objects.create(resume_text = resume, job_text = job, match_score = score, matched_keywords = matched_keywords)
     
-    return JsonResponse({'analysis_id': analysis.id, 'match_score': score, 'matched_keywords': matched_keywords})
+    serializer = ResumeAnalyzerSerializer(analysis)
 
+    return Response(serializer.data, status = 200)
+
+@api_view(['GET'])
 def analyses_list(request):
-
-    if request.method != 'GET':
-        return JsonResponse({'error': 'GET Required'}, status = 405)
     
     analyses = ResumeAnalyzer.objects.all().order_by('-created_at') #the - means descending order
+    serializer = ResumeAnalyzerSerializer(analyses, many = True)
+    return Response(serializer.data)
 
-    data = []
-    for analysis in analyses:
-
-        data.append({'id': analysis.id, 'match_score': analysis.match_score, 'matched_keywords': analysis.matched_keywords, 'created_at': analysis.created_at.isoformat()})
-
-    return JsonResponse(data, safe=False) #safe constrols if only dict cand be JSON serialized
-
+@api_view(['GET'])
 def analyses_list_by_id(request, analysis_id):
+
+    try:
+        analysis = ResumeAnalyzer.objects.get(id = analysis_id)
+    except ResumeAnalyzer.DoesNotExist:
+        return JsonResponse({'error': 'Analysis not found'}, status = 404)
+
+    serializer = ResumeAnalyzerSerializer(analysis)
+
+    return Response(serializer.data)
+
+'''
+#def analyses_list_by_id(request, analysis_id):
 
     if request.method != 'GET':
         return JsonResponse({'error': 'GET required'}, status = 405)
@@ -59,4 +65,4 @@ def analyses_list_by_id(request, analysis_id):
     data = {'id': analysis.id, 'match_score': analysis.match_score, 'matched_keywords': analysis.matched_keywords, 'created_at': analysis.created_at.isoformat()}
 
     return JsonResponse(data)
-
+'''
