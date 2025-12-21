@@ -17,20 +17,15 @@ def ping(request):
 
 @api_view(['POST'])
 def analyze(request):
-
-    resume = request.data.get('resume')
-    job = request.data.get('job')
-
-    if not resume or not job:
-        return JsonResponse({'error': 'Missing data'}, status = 400)
     
-    score, matched_keywords = analyze_resume(resume, job)
-
-    analysis = ResumeAnalyzer.objects.create(resume_text = resume, job_text = job, match_score = score, matched_keywords = matched_keywords)
+    serializer = ResumeAnalyzerSerializer(data = request.data)
     
-    serializer = ResumeAnalyzerSerializer(analysis)
+    if serializer.is_valid():
 
-    return Response(serializer.data, status = 200)
+        serializer.save()
+        return Response(serializer.data, status = 200)
+
+    return Response(serializer.errors, status = 400)
 
 @api_view(['GET'])
 def analyses_list(request):
