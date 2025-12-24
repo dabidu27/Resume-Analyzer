@@ -5,6 +5,7 @@ from .models import ResumeAnalyzer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .serializers import ResumeAnalyzerSerializer
+from .pagination import AnalysisListPagination
 
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView
 
@@ -24,6 +25,7 @@ class AnalysisListView(ListAPIView):
 
     queryset = ResumeAnalyzer.objects.all()
     serializer_class = ResumeAnalyzerSerializer
+    pagination_class = AnalysisListPagination
 
 class AnalysisDetailView(RetrieveAPIView):
 
