@@ -42,8 +42,11 @@ INSTALLED_APPS = [
     'analyzer'
 ]
 
-#Global Pagination
-REST_FRAMEWORK = {'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination', 'PAGE_SIZE': 2} 
+REST_FRAMEWORK = {
+    #Enable global Pagination
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination', 'PAGE_SIZE': 2,
+    #Activate filtering and ordering
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend', 'rest_framework.filters.OrderingFilter']} 
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

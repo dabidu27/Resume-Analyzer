@@ -26,6 +26,10 @@ class AnalysisListView(ListAPIView):
     queryset = ResumeAnalyzer.objects.all()
     serializer_class = ResumeAnalyzerSerializer
     pagination_class = AnalysisListPagination
+    
+    filterset_fields = ['match_score', 'created_at'] #we set that we can filter by match_score and created_at
+    ordering_fields = ['created_at', 'match_score'] #we set that we can order by created_at and match_score
+    ordering = ['-created_at'] #we set default ordering by created_at, descending
 
 class AnalysisDetailView(RetrieveAPIView):
 
