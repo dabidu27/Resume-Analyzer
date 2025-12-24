@@ -12,3 +12,65 @@ GET http://127.0.0.1:8000/analyses/?match_score=3
 
 ### Get analysis by ID
 GET http://127.0.0.1:8000/analyses/4/
+
+### Test registration
+
+POST http://127.0.0.1:8000/register/
+Content-Type: application/json
+
+{
+  "username": "user1",
+  "password": "password123"
+}
+
+### Test login
+POST http://127.0.0.1:8000/login/
+Content-Type: application/json
+
+{
+  "username": "user1",
+  "password": "password123"
+}
+
+###Test get request without token (test permissions)
+GET http://127.0.0.1:8000/analyses/
+
+###Test Create Analysis (WITH TOKEN)
+POST http://127.0.0.1:8000/analyze/
+Authorization: Token a638b0b8cb873922084400309b7689dd3be81c68
+Content-Type: application/json
+
+{
+  "resume_text": "python django api",
+  "job_text": "django backend developer"
+}
+
+###Test List Analyses (OWNERSHIP)
+#we should only see user1's analyses
+GET http://127.0.0.1:8000/analyses/
+Authorization: Token a638b0b8cb873922084400309b7689dd3be81c68
+
+###Test Ownership Isolation (CRITICAL)
+
+#register as user2
+POST http://127.0.0.1:8000/register/
+Content-Type: application/json
+
+{
+  "username": "user2",
+  "password": "password123"
+}
+
+###login as user2
+
+POST http://127.0.0.1:8000/login/
+Content-Type: application/json
+
+{
+  "username": "user2",
+  "password": "password123"
+}
+
+###now we should get an empty list because user2 doesn t have any analyses yer
+GET http://127.0.0.1:8000/analyses/
+Authorization: Token d0b07ca9f6f355cb63e7d4017cc804dc9c836122
