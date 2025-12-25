@@ -1,6 +1,8 @@
 import spacy
 import re
 from sklearn.feature_extraction.text import TfidfVectorizer
+from collections import Counter
+
 
 class ResumeAnalyzerTool:
 
@@ -15,6 +17,7 @@ class ResumeAnalyzerTool:
         text = re.sub(r'\s+', ' ', text)
         text = re.sub(r'[()]', '', text)
         text = text.strip()
+        text = text.lower()
 
         return text.strip()
 
@@ -24,14 +27,15 @@ class ResumeAnalyzerTool:
         doc = self.nlp(self.job_text)
 
         terms = []
+        generic = {"company", "people", "world", "opportunity", "culture", "team", "time", "process"}
 
         for token in doc:
 
             if token.pos_ in ['NOUN', 'PROPN']:
 
-                if not token.is_stop and token.is_alpha and len(token) > 2:
+                if not token.is_stop and token.is_alpha and len(token) > 2 and token.text not in generic:
 
-                        terms.append(token.lemma_.lower())
+                        terms.append(token.lemma_)
 
         for chunk in doc.noun_chunks:
 
@@ -47,17 +51,12 @@ class ResumeAnalyzerTool:
 
         terms = self.process_job_description()
 
-        vectorizer = TfidfVectorizer(ngram_range=(1,2), min_df=1)
+        freq = Counter(terms)
 
-        tfidf = vectorizer.fit_transform([" ". join(terms)])
+        keywords = [(term, count) for term, count in freq.most_common(20)]
 
-        scores = zip(vectorizer.get_feature_names_out(), tfidf.toarray()[0])
+        keywords = [tpl[0] for tpl in keywords]
 
-        ranked = sorted(scores, key = lambda x: x[1], reverse = True)
-
-        ranked = ranked[:20]
-
-        keywords = [tpl[0] for tpl in ranked]
         return keywords
 
     
@@ -74,7 +73,7 @@ class ResumeAnalyzerTool:
 
                 if not token.is_stop and token.is_alpha and len(token) > 2:
 
-                        terms.append(token.lemma_.lower())
+                        terms.append(token.lemma_)
 
         for chunk in doc.noun_chunks:
 
@@ -89,8 +88,8 @@ class ResumeAnalyzerTool:
 
     def analyze_resume(self):
 
-        job_keywords = self.rank_job_keywords()
-        resume_tokens = self.process_resume()
+        job_keywords = set(self.rank_job_keywords())
+        resume_tokens = set(self.process_resume())
 
         print(job_keywords)
         print(resume_tokens)
