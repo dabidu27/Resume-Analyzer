@@ -1,8 +1,8 @@
 from rest_framework import serializers
 from .models import ResumeAnalyzer
-from .services.analysis import analyze_resume
+from .services.analysis import ResumeAnalyzerTool
 from django.contrib.auth.models import User
-from .services.parse_pdf import extract_text
+from .services.parse_pdf import PdfParser
 
 
 class ResumeUploadSerializer(serializers.ModelSerializer):
@@ -14,6 +14,7 @@ class ResumeUploadSerializer(serializers.ModelSerializer):
         read_only_fields = ['user', 'id']
 
     def validate_resume_file(self, value):
+        #because we use multipart/form instead of pure json we need to validate the value
         #this method is called automatically for the resume_file field
         if not value:
             raise serializers.ValidationError('Resume file is required')
@@ -26,7 +27,9 @@ class ResumeUploadSerializer(serializers.ModelSerializer):
         user = request.user
 
         resume_file = validated_data['resume_file']
-        resume_text = extract_text(resume_file)
+
+        parser = PdfParser(resume_file)
+        resume_text = parser.extract_text(resume_file)
 
         return ResumeAnalyzer.objects.create(user = user, resume_file = resume_file, resume_text = resume_text)
     
@@ -37,11 +40,11 @@ class JobDescriptionUploadSerializer(serializers.ModelSerializer):
         model = ResumeAnalyzer
         fields = ['job_text']
 
-    def validate(self, data):
+    def validate_job_text(self, value):
         
-        if 'job_text' not in data:
-            raise serializers.ValidationError("Job description required")
-        return data
+        if not value:
+            raise serializers.ValidationError('Resume file is required')
+        return value
     
 
 class AnalyzeResumeSerializer(serializers.ModelSerializer):
@@ -76,10 +79,12 @@ class ResumeAnalyzerSerializer(serializers.ModelSerializer):
         #we cannot use request.user directly in the serializier, only in the view
         resume_file = validated_data['resume_file']
 
-        resume_text = extract_text(resume_file)
+        parser = PdfParser(resume_file)
+        resume_text = parser.extract_text(resume_file)
         job_text = validated_data['job_text']
 
-        score, matched_keywords = analyze_resume(resume_text=resume_text, job_text=job_text)
+        resumeAnalyzer = ResumeAnalyzerTool(resume_text, job_text)
+        score, matched_keywords = resumeAnalyzer.analyze_resume()
 
         return ResumeAnalyzer.objects.create(user = user, resume_text = resume_text, job_text = job_text, match_score = score, matched_keywords = matched_keywords)
 

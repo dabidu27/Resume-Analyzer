@@ -78,25 +78,63 @@ Authorization: Token d0b07ca9f6f355cb63e7d4017cc804dc9c836122
 
 ### Upload resume PDF
 POST http://127.0.0.1:8000/upload/resume/
-Authorization: Token a638b0b8cb873922084400309b7689dd3be81c68
+Authorization: Token d0b07ca9f6f355cb63e7d4017cc804dc9c836122
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
 Content-Disposition: form-data; name="resume_file"; filename="CV.pdf"
 Content-Type: application/pdf
 
-< ./cv_data_engineer.pdf
+< ./cv_python.pdf
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 
 ### Upload Job Description
-POST http://127.0.0.1:8000/upload/job/9/
-Authorization: Token a638b0b8cb873922084400309b7689dd3be81c68
-Content-Type: application/json
 
-{
-  "job_text": "We are looking for a Senior Python Developer with 5+ years of experience in Django and REST APIs. Strong knowledge of PostgreSQL, Redis, and AWS required. Experience with CI/CD pipelines and Docker is a plus."
-}
+POST http://127.0.0.1:8000/upload/job/10/
+Authorization: Token d0b07ca9f6f355cb63e7d4017cc804dc9c836122
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
+
+------WebKitFormBoundary
+Content-Disposition: form-data; name="job_text"
+
+"Changing the world through digital experiences is what Adobe’s all about. We give everyone—from emerging artists to global brands—everything they need to design and deliver exceptional digital experiences! We’re passionate about empowering people to create beautiful and powerful images, videos, and apps, and transform how companies interact with customers across every screen.
+
+We’re on a mission to hire the very best and are committed to creating exceptional employee experiences where everyone is respected and has access to equal opportunity. We realize that new ideas can come from everywhere in the organization, and we know the next big idea could be yours!
+
+Ready to launch your engineering career in tech?
+
+When you join us as an engineering new graduate, you’ll dive into real projects that impact the future of our products. You’ll work side-by-side with experienced teams, contribute meaningful code, and see how a global tech company builds and scales innovation.
+
+This opportunity is based in Bucharest, Romania, with a hybrid schedule (2–3 days/week onsite). The contract start date is 1st of January 2026.
+
+What’s in it for you?
+
+    Real impact: You’ll work on meaningful engineering projects that contribute directly to Adobe’s products and platforms. Collaborate with experienced teams, solve real challenges, and build skills that matter. 
+    Authentic culture: At Adobe, you’re encouraged to be yourself. Our values- Create the future, Own the outcome, Raise the bar, and Be genuine- shape a culture where innovation thrives, ownership is celebrated, and authenticity is respected. 
+    Hybrid Work: At Adobe, we blend the flexibility of working from home with meaningful time together in the office to strengthen our culture and collaboration. 
+
+What are we looking for?
+
+    Curiosity and drive: you’re eager to learn, explore new ideas, and contribute to a global, market-leading company. 
+    Recent graduate eligible: candidates who have graduated within 6 months before or after January 1st. This includes individuals who have recently completed or are about to complete a Bachelor’s, Master’s, or Ph.D. in Computer Science, Computer Engineering, or a related field
+    Passionate about programming with a good understanding of concepts such as Data Structures, OOP, Operating Systems, Problem Solving. 
+    Excellent verbal and written English communication skills; can effectively articulate complex ideas and influence others through well-reasoned explanations. 
+    Team collaboration: You enjoy working with others to deliver thoughtful, end-to-end solutions. 
+    Big picture thinking: You can connect the dots between day-to-day tasks and broader organisational goals. 
+
+What to expect from the recruitment process?
+
+Our selection process typically consists of 2 stages as follows:
+
+    90-minute Technical Interview with the team. 
+    45-minute Soft-Skills Interview with the Hiring Manager. 
+
+Adobe is proud to be an Equal Employment Opportunity employer. We do not discriminate based on gender, race or color, ethnicity or national origin, age, disability, religion, sexual orientation, gender identity or expression, veteran status, or any other applicable characteristics protected by law. Learn more.
+
+Adobe aims to make Adobe.com accessible to any and all users. If you have a disability or special need that requires accommodation to navigate our website or complete the application process, email accommodations@adobe.com or call (408) 536-3015."
+------WebKitFormBoundary--
+
 
 ### Analyze Resume
-GET http://127.0.0.1:8000/analyze/9/
-Authorization: Token a638b0b8cb873922084400309b7689dd3be81c68
+GET http://127.0.0.1:8000/analyze/10/
+Authorization: Token d0b07ca9f6f355cb63e7d4017cc804dc9c836122

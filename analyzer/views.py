@@ -1,14 +1,13 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
-from .services.analysis import analyze_resume
 from .models import ResumeAnalyzer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .serializers import ResumeAnalyzerSerializer, RegistrationSerializer, ResumeUploadSerializer, JobDescriptionUploadSerializer, AnalyzeResumeSerializer
 from .pagination import AnalysisListPagination
 from rest_framework.permissions import AllowAny
-from .services.parse_pdf import extract_text
-from .services.analysis import analyze_resume
+from .services.parse_pdf import PdfParser
+from .services.analysis import ResumeAnalyzerTool
 from rest_framework.parsers import MultiPartParser, FormParser
 
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView
@@ -24,10 +23,11 @@ def home(request):
 def ping(request):
     return JsonResponse({'status': 200, 'message': 'Server is running'})
 
-@method_decorator(csrf_exempt, name='dispatch')
+#WHEN WE USE CLASS BASED VIEWS (but not generic, just APIView), the method inside just be called post or get,
+#so django knows what type of request to except, instead of using the api_view decorator
 class ResumeUploadView(APIView):
     
-   parser_classes = [MultiPartParser ,FormParser]
+   parser_classes = [MultiPartParser, FormParser]
 
    def post(self, request):
        
@@ -40,6 +40,7 @@ class ResumeUploadView(APIView):
 
 class JobDescriptionUploadView(APIView):
 
+    parser_classes = [MultiPartParser, FormParser]
     def post(self, request, analysis_id):
         
         try:
@@ -54,7 +55,7 @@ class JobDescriptionUploadView(APIView):
         analysis = serializer.save()
 
         return Response({'analysis_id': analysis_id, 'message': 'Job description successfully uploaded'}, status = 200)
-    
+
 class AnalyzeResumeView(APIView):
 
     def get(self, request, analysis_id):
@@ -67,7 +68,8 @@ class AnalyzeResumeView(APIView):
         if not analysis.resume_text or  not analysis.job_text:
             return Response({'error': 'Missing data'}, status = 400)
 
-        match_score, matched_keywords = analyze_resume(analysis.resume_text, analysis.job_text)
+        resumeAnalyzer = ResumeAnalyzerTool(analysis.resume_text, analysis.job_text)
+        match_score, matched_keywords = resumeAnalyzer.analyze_resume()
         analysis.match_score = match_score
         analysis.matched_keywords = matched_keywords
         analysis.save()
