@@ -11,7 +11,8 @@ Content-Type: application/json
 GET http://127.0.0.1:8000/analyses/?match_score=3
 
 ### Get analysis by ID
-GET http://127.0.0.1:8000/analyses/4/
+GET http://127.0.0.1:8000/analyses/7/
+Authorization: Token d0b07ca9f6f355cb63e7d4017cc804dc9c836122
 
 ### Test registration
 
@@ -74,3 +75,28 @@ Content-Type: application/json
 ###now we should get an empty list because user2 doesn t have any analyses yer
 GET http://127.0.0.1:8000/analyses/
 Authorization: Token d0b07ca9f6f355cb63e7d4017cc804dc9c836122
+
+### Upload resume PDF
+POST http://127.0.0.1:8000/upload/resume/
+Authorization: Token a638b0b8cb873922084400309b7689dd3be81c68
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="resume_file"; filename="CV.pdf"
+Content-Type: application/pdf
+
+< ./cv_data_engineer.pdf
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### Upload Job Description
+POST http://127.0.0.1:8000/upload/job/9/
+Authorization: Token a638b0b8cb873922084400309b7689dd3be81c68
+Content-Type: application/json
+
+{
+  "job_text": "We are looking for a Senior Python Developer with 5+ years of experience in Django and REST APIs. Strong knowledge of PostgreSQL, Redis, and AWS required. Experience with CI/CD pipelines and Docker is a plus."
+}
+
+### Analyze Resume
+GET http://127.0.0.1:8000/analyze/9/
+Authorization: Token a638b0b8cb873922084400309b7689dd3be81c68

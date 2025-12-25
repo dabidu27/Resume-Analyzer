@@ -4,11 +4,18 @@ from .services.analysis import analyze_resume
 from .models import ResumeAnalyzer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializers import ResumeAnalyzerSerializer, RegistrationSerializer
+from .serializers import ResumeAnalyzerSerializer, RegistrationSerializer, ResumeUploadSerializer, JobDescriptionUploadSerializer, AnalyzeResumeSerializer
 from .pagination import AnalysisListPagination
 from rest_framework.permissions import AllowAny
+from .services.parse_pdf import extract_text
+from .services.analysis import analyze_resume
+from rest_framework.parsers import MultiPartParser, FormParser
 
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView
+from rest_framework.views import APIView
+
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
 # Create your views here.
 def home(request):
@@ -17,10 +24,57 @@ def home(request):
 def ping(request):
     return JsonResponse({'status': 200, 'message': 'Server is running'})
 
-class AnalyzeCreateView(CreateAPIView):
+@method_decorator(csrf_exempt, name='dispatch')
+class ResumeUploadView(APIView):
     
-    queryset = ResumeAnalyzer.objects.all()
-    serializer_class = ResumeAnalyzerSerializer
+   parser_classes = [MultiPartParser ,FormParser]
+
+   def post(self, request):
+       
+       serializer = ResumeUploadSerializer(data = request.data, context = {'request': request})
+
+       serializer.is_valid(raise_exception=True)
+       analysis = serializer.save()
+
+       return Response({'analysis_id': analysis.id, 'message': 'Resume uploaded successfully'}, status=200)
+
+class JobDescriptionUploadView(APIView):
+
+    def post(self, request, analysis_id):
+        
+        try:
+            analysis = ResumeAnalyzer.objects.get(id = analysis_id, user = request.user)
+        except ResumeAnalyzer.DoesNotExist:
+            return Response({'error': 'Not found'}, status=404)
+        
+        #because we call the serialzier with the analysis instance, Django calls the .upload() method instead of .create() when we save, replacing the state of the same object
+        serializer = JobDescriptionUploadSerializer(analysis, data = request.data, context = {'request': request})
+
+        serializer.is_valid(raise_exception = True)
+        analysis = serializer.save()
+
+        return Response({'analysis_id': analysis_id, 'message': 'Job description successfully uploaded'}, status = 200)
+    
+class AnalyzeResumeView(APIView):
+
+    def get(self, request, analysis_id):
+
+        try:
+            analysis = ResumeAnalyzer.objects.get(id = analysis_id, user = request.user)
+        except ResumeAnalyzer.DoesNotExist:
+            return Response({'error': 'Not found'}, status = 404)
+        
+        if not analysis.resume_text or  not analysis.job_text:
+            return Response({'error': 'Missing data'}, status = 400)
+
+        match_score, matched_keywords = analyze_resume(analysis.resume_text, analysis.job_text)
+        analysis.match_score = match_score
+        analysis.matched_keywords = matched_keywords
+        analysis.save()
+        serializer = AnalyzeResumeSerializer(analysis)
+
+        return Response(serializer.data, status = 200)
+
 
 class AnalysisListView(ListAPIView):
 
