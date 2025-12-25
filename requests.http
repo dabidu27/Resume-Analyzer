@@ -90,7 +90,7 @@ Content-Type: application/pdf
 
 ### Upload Job Description
 
-POST http://127.0.0.1:8000/upload/job/10/
+POST http://127.0.0.1:8000/upload/job/11/
 Authorization: Token d0b07ca9f6f355cb63e7d4017cc804dc9c836122
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
 
@@ -136,5 +136,5 @@ Adobe aims to make Adobe.com accessible to any and all users. If you have a disa
 
 
 ### Analyze Resume
-GET http://127.0.0.1:8000/analyze/10/
+GET http://127.0.0.1:8000/analyze/11/
 Authorization: Token d0b07ca9f6f355cb63e7d4017cc804dc9c836122
