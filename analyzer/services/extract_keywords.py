@@ -1,12 +1,14 @@
 import pickle
 from pathlib import Path
-from tfidf_model import TfidfModel
+from analyzer.services.tfidf_model import TfidfModel
 import pytextrank
 import spacy
+from sentence_transformers import SentenceTransformer
+from analyzer.models.label_model import LabelKeywords
 
 def clean(text):
     
-    nlp = spacy.load('en_web_core_sm')
+    nlp = spacy.load('en_core_web_sm')
     doc = nlp(text)
 
     terms = []
@@ -20,25 +22,25 @@ def clean(text):
 
                         terms.append(token.lemma_)
             
-            for token in doc.ents:
+    for token in doc.ents:
 
-                if token.label_ in ['SKILL', 'PRODUCT', 'TECHNOLOGY']:
+            if token.label_ in ['SKILL', 'PRODUCT', 'TECHNOLOGY']:
 
-                    terms.append(token.text)
+                terms.append(token.text)
 
-            for chunk in doc.noun_chunks:
+    for chunk in doc.noun_chunks:
 
-                lemmas = [token.lemma_ for token in chunk if token.pos_ in ['NOUN', 'PROPN'] and not token.is_stop and token.is_alpha]
+        lemmas = [token.lemma_ for token in chunk if token.pos_ in ['NOUN', 'PROPN'] and not token.is_stop and token.is_alpha]
 
-                if len(lemmas) > 1:
+        if len(lemmas) > 1:
                     
-                    terms.append(" ".join(lemmas))
+            terms.append(" ".join(lemmas))
 
-    return " ".join(terms)
+    return terms
 
 if __name__ == "__main__":
 
-    model_path = Path(__file__).resolve().parent.parent / "models" / "tfidf_model.pkl"
+    predictor_path = Path(__file__).resolve().parent.parent / "models" / "skill_classifier.pkl"
 
     job_description = """The PYTHON DEVELOPER (F/M) internship is part of DIGITAL HUB ROMANIA - FINANCE / DIR.SYSTEMES D'INFORMATION ROUMANIE
 
@@ -71,10 +73,25 @@ Application development: scripts, automation, mini-projects
 Team collaboration, code versioning (Git), Agile methodologies
 All applications will be considered regardless of nationality, gender, disability, age, race, color, religion, pregnancy status, gender identity or sexual orientation."""
 
-with open(model_path, 'rb') as f:
-    vectorizer = pickle.load(f)
+keywords = clean(job_description)
 
-tfidf_model = TfidfModel()
-tfidf_model.model = vectorizer
-keywords = tfidf_model.extractKeywords(job_description)
-print(keywords)
+with open(predictor_path, 'rb') as f:
+     predictor_model = pickle.load(f)
+
+hard_skills = []
+soft_skills = []
+ambiguous = []
+
+for keyword in keywords:
+    
+    keyword_label = predictor_model.predict(keyword)
+    if keyword_label == 'Hard Skill':
+         hard_skills.append(keyword)
+    elif keyword_label == 'Soft Skill':
+         soft_skills.append(keyword)
+    elif keyword_label == 'Ambiguous':
+        ambiguous.append(keyword)
+
+print(soft_skills)
+print(hard_skills)
+print(ambiguous)

@@ -44,7 +44,7 @@ class LabelKeywords:
         keyword_embedding = self.embedder.encode([keyword])
 
         proba = self.model.predict_proba(keyword_embedding)[0]
-        if max(proba) < 0.65:
+        if max(proba) < 0.85:
             return "Ambiguous"
         else:
             label = self.label_encoder.inverse_transform([proba.argmax()])[0]
