@@ -3,6 +3,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from pathlib import Path
 import re
 import pickle
+import spacy
 
 class TfidfModel:
 
@@ -14,6 +15,7 @@ class TfidfModel:
         self.model = None
         self.tfidf_matrix = None
         self.job_descriptions = None
+        self.nlp = spacy.load('en_core_web_sm')
         
     def getJobDescriptions(self):
 
@@ -22,6 +24,7 @@ class TfidfModel:
         return job_descriptions
     
     def cleanJobDescription(self, text):
+
         text = text.lower()
 
         text = re.sub(r'\S+@\S+', ' ', text)
@@ -58,14 +61,40 @@ class TfidfModel:
 
         text = re.sub(r'\s+', ' ', text).strip()
 
-        return text
+        doc = self.nlp(text)
 
+        terms = []
+        generic = {"company", "people", "world", "opportunity", "culture", "team", "time", "process"}
+
+        for token in doc:
+
+            if token.pos_ in ['NOUN', 'PROPN']:
+
+                if not token.is_stop and token.is_alpha and len(token) > 2 and token.text not in generic:
+
+                        terms.append(token.lemma_)
+                
+        for token in doc.ents:
+
+            if token.label_ in ['SKILL', 'PRODUCT', 'TECHNOLOGY']:
+
+                terms.append(token.text)
+
+        for chunk in doc.noun_chunks:
+
+            lemmas = [token.lemma_ for token in chunk if token.pos_ in ['NOUN', 'PROPN'] and not token.is_stop and token.is_alpha]
+
+            if len(lemmas) > 1:
+                        
+                terms.append(" ".join(lemmas))
+
+        return " ".join(terms)
 
     def train(self):
 
         raw_descriptions = self.getJobDescriptions()
-        self.job_descriptions = [self.cleanJobDescription(job_description) for job_description in raw_descriptions]
-
+        self.job_descriptions = [self.cleanJobDescription(d) for d in raw_descriptions]
+        
         self.model = TfidfVectorizer(stop_words='english', max_df = 0.85, min_df = 2, ngram_range=(1,3))
         self.tfidf_matrix = self.model.fit_transform(self.job_descriptions)
     
@@ -77,11 +106,10 @@ class TfidfModel:
         scores = vector.toarray()[0]
         features = self.model.get_feature_names_out()
 
-        keywords_with_scores = list(zip(features, scores))
-        keywords_with_scores = [(feature, score) for feature, score in keywords_with_scores if score > 0]
+        keywords_with_scores = [(feature, float(score)) for feature, score in zip(features, scores) if score > 0]
         keywords_with_scores.sort(key = lambda x: x[1], reverse = True)
 
-        keywords = keywords_with_scores[:top_n]
+        keywords = [feature for feature, score in keywords_with_scores[:top_n]]
         return keywords
 
 if __name__ == "__main__":
