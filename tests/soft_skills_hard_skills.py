@@ -3,7 +3,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 
-from analyzer.models.label_model import LabelKeywords
+from analyzer.ml_models.label_model import LabelKeywords
 import spacy
 
 
