@@ -77,12 +77,15 @@ class ResumeAnalyzerTool:
 
         keyword_embedding = self.embedder.encode([keyword])
         proba = self.predictor_model.predict_proba(keyword_embedding)[0]
-    
-        if max(proba) < 0.80:
-            return "Ambiguous"
-        else:
-            prediction = proba.argmax()
-            return self.label_encoder.inverse_transform([prediction])[0]
+    #the prediction returns an array containing 2 numbers: probability of label being hard skill and probability of skill being soft skill
+        prediction = proba.argmax() #returns the index of the number with the higher probability => 0 for hard skill, 1 for soft skill
+        keyword_label = self.label_encoder.inverse_transform([prediction])[0] #converts 0 back to hard skill and 1 back to soft skill
+        confidence = max(proba) #return the highest probability in the prediction array (not the index, as .argmax())
+        if confidence < 0.65:
+            keyword_label = 'ambiguous'
+    #if prediction array is  proba = [0.85, 0.5] => proba.argmax() = 0 => confidence = max(proba) = 0.85
+
+        return keyword_label
 
     def analyze_resume(self):
 
@@ -92,7 +95,7 @@ class ResumeAnalyzerTool:
         
         hard_skills = []
         for keyword in job_keywords:
-            if self.predict_skill(keyword) == 'Hard Skill':
+            if self.predict_skill(keyword).lower() == 'hard skill':
                 hard_skills.append(keyword)
         
         print(hard_skills)

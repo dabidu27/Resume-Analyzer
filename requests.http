@@ -134,3 +134,93 @@ All applications will be considered regardless of nationality, gender, disabilit
 ### Analyze Resume
 GET http://127.0.0.1:8000/analyze/12/
 Authorization: Token d0b07ca9f6f355cb63e7d4017cc804dc9c836122
+
+
+### Upload resume PDF
+POST http://127.0.0.1:8000/upload/resume/
+Authorization: Token d0b07ca9f6f355cb63e7d4017cc804dc9c836122
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="resume_file"; filename="CV.pdf"
+Content-Type: application/pdf
+
+< ./cv_python.pdf
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### Upload Job Description
+
+POST http://127.0.0.1:8000/upload/job/13/
+Authorization: Token d0b07ca9f6f355cb63e7d4017cc804dc9c836122
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
+
+------WebKitFormBoundary
+Content-Disposition: form-data; name="job_text"
+
+What You'll Do:
+
+    Deliver features with needed quality & timelines
+    Design features & solutions taking into account future usage & all other constraints
+    Improve solution quality
+    Provide estimations for features delivery with required accuracy
+    Participate in design and code review
+    Integrate with internal and external services
+    Monitor efficiency and performance
+    Support and develop multiple projects, depending on team
+    Troubleshoot various project errors & issues
+    When needed, write clear & cohesive technical specification
+    Write automated tests to ensure high quality of work
+
+
+Who You Are:
+
+    2+ Years of experience
+    Ability to work independently and dig into a problem
+    Ability to work according to agreed deadlines
+    Ability to write clear, self-documented code
+    Basic data structures and algorithms, time-space complexity
+    Basic Network understanding (HTTP - is a must)
+    Decent Python 3 knowledge, core concepts and low-level implementation
+    Good written communication skills in English
+    Experience in developing REST APIs (Django, DRF, preferably)
+    Experience in devising feature design, producing quality documentation & decomposition with estimation
+    Experience using continuous integration and automation processes
+    Experience with relational databases (preferably PostgreSQL)
+    Experience with Unix systems
+    Knowledge of design patterns & principles (OOP, SOLID)
+    Passion for writing maintainable tests (unit, functional, end-to-end, mocks)
+
+
+We acknowledge that many candidates may not meet every single role requirement listed above. If your experience looks a little different from our requirements but you believe that you can still bring value to the role, we’d love to see your application!
+
+We acknowledge that many candidates may not meet every single role requirement listed above. If your experience looks a little different from our requirements but you believe that you can still bring value to the role, we’d love to see your application!
+
+Who We Are:
+
+Criteo is a leader in commerce media, helping brands, agencies, and publishers create meaningful consumer connections through AI-powered advertising solutions. We’re shaping a more open and sustainable digital future for advertising.
+
+At Criteo, our culture is as unique as it is diverse. From our offices across the globe or from the comfort of home, our 3,600 Criteos collaborate together to build an open, impactful, and forward-thinking environment.
+
+We foster a workplace where everyone is valued, and employment decisions are based solely on skills, qualifications, and business needs—never on non-job-related factors or legally protected characteristics.
+
+What We Offer:
+
+🏢 Ways of working – Our hybrid model blends home with in-office experiences, making space for both.
+
+📈 Grow with us – Learning, mentorship & career development programs.
+
+💪 Your wellbeing matters – Health benefits, wellness perks & mental health support.
+
+🤝 A team that cares – Diverse, inclusive, and globally connected.
+
+💸 Fair pay & perks – Attractive salary, with performance-based rewards and family-friendly policies, plus the potential for equity depending on role and level.
+
+Additional benefits may vary depending on the country where you work and the nature of your employment with Criteo.
+
+------WebKitFormBoundary--
+
+
+### Analyze Resume
+GET http://127.0.0.1:8000/analyze/13/
+Authorization: Token d0b07ca9f6f355cb63e7d4017cc804dc9c836122
+
