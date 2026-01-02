@@ -1,21 +1,22 @@
 from PyPDF2 import PdfReader
 
+
 class PdfParser:
 
     def __init__(self, file):
         self.file = file
-        
-    def extract_text(self, file):
 
-        file.seek(0)
+    def extract_text(self):
 
-        reader = PdfReader(file)
+        self.file.seek(0)
+
+        reader = PdfReader(self.file)
         text = ""
 
         for page in reader.pages:
 
             text += page.extract_text() or ""
 
-        file.seek(0)
-        
+        self.file.seek(0)
+
         return text.strip()

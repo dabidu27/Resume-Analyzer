@@ -15,18 +15,22 @@ class ResumeAnalyzerTool:
         self.resume_text = resume_text
         self.job_text = job_text
         self.nlp = spacy.load("en_core_web_sm")
-        predictor_path = Path(__file__).resolve().parent.parent / "ml_models" / "skill_classifier.pkl"
-        with open(predictor_path, 'rb') as f:
+        predictor_path = (
+            Path(__file__).resolve().parent.parent
+            / "ml_models"
+            / "skill_classifier.pkl"
+        )
+        with open(predictor_path, "rb") as f:
 
             model_dict = pickle.load(f)
-            self.predictor_model = model_dict['model']
-            self.label_encoder = model_dict['label_encoder']
-            self.embedder = model_dict['embedder']
+            self.predictor_model = model_dict["model"]
+            self.label_encoder = model_dict["label_encoder"]
+            self.embedder = model_dict["embedder"]
 
     def clean_text(self, text):
 
-        text = re.sub(r'\s+', ' ', text)
-        text = re.sub(r'[()]', '', text)
+        text = re.sub(r"\s+", " ", text)
+        text = re.sub(r"[()]", "", text)
 
         return text.strip()
 
@@ -35,28 +39,48 @@ class ResumeAnalyzerTool:
         doc = self.nlp(text)
 
         terms = []
-        generic = {"company", "people", "world", "opportunity", "culture", "team", "time", "process"}
+        generic = {
+            "company",
+            "people",
+            "world",
+            "opportunity",
+            "culture",
+            "team",
+            "time",
+            "process",
+        }
 
         for token in doc:
 
-            if token.pos_ in ['NOUN', 'PROPN']:
+            if token.pos_ in ["NOUN", "PROPN"]:
 
-                if not token.is_stop and token.is_alpha and len(token) > 2 and token.text not in generic:
+                if (
+                    not token.is_stop
+                    and token.is_alpha
+                    and len(token) > 2
+                    and token.text not in generic
+                ):
 
-                        terms.append(token.lemma_.lower())
-        
+                    terms.append(token.lemma_.lower())
+
         for token in doc.ents:
 
-            if token.label_ in ['SKILL', 'PRODUCT', 'TECHNOLOGY']:
+            if token.label_ in ["SKILL", "PRODUCT", "TECHNOLOGY"]:
 
                 terms.append(token.text.lower())
 
         for chunk in doc.noun_chunks:
 
-            lemmas = [token.lemma_ for token in chunk if token.pos_ in ['NOUN', 'PROPN'] and not token.is_stop and token.is_alpha]
+            lemmas = [
+                token.lemma_
+                for token in chunk
+                if token.pos_ in ["NOUN", "PROPN"]
+                and not token.is_stop
+                and token.is_alpha
+            ]
 
             if len(lemmas) > 1:
-                
+
                 terms.append(" ".join(lemmas).lower())
 
         return terms
@@ -77,28 +101,33 @@ class ResumeAnalyzerTool:
 
         keyword_embedding = self.embedder.encode([keyword])
         proba = self.predictor_model.predict_proba(keyword_embedding)[0]
-    #the prediction returns an array containing 2 numbers: probability of label being hard skill and probability of skill being soft skill
-        prediction = proba.argmax() #returns the index of the number with the higher probability => 0 for hard skill, 1 for soft skill
-        keyword_label = self.label_encoder.inverse_transform([prediction])[0] #converts 0 back to hard skill and 1 back to soft skill
-        confidence = max(proba) #return the highest probability in the prediction array (not the index, as .argmax())
+        # the prediction returns an array containing 2 numbers: probability of label being hard skill and probability of skill being soft skill
+        prediction = (
+            proba.argmax()
+        )  # returns the index of the number with the higher probability => 0 for hard skill, 1 for soft skill
+        keyword_label = self.label_encoder.inverse_transform([prediction])[
+            0
+        ]  # converts 0 back to hard skill and 1 back to soft skill
+        confidence = max(
+            proba
+        )  # return the highest probability in the prediction array (not the index, as .argmax())
         if confidence < 0.65:
-            keyword_label = 'ambiguous'
-    #if prediction array is  proba = [0.85, 0.5] => proba.argmax() = 0 => confidence = max(proba) = 0.85
+            keyword_label = "ambiguous"
+        # if prediction array is  proba = [0.85, 0.5] => proba.argmax() = 0 => confidence = max(proba) = 0.85
 
         return keyword_label
 
     def analyze_resume(self):
 
         job_keywords = set(self.extract_keywords(self.job_text))
-        
+
         resume_tokens = set(self.extract_keywords(self.resume_text))
-        
+
         hard_skills = []
         for keyword in job_keywords:
-            if self.predict_skill(keyword).lower() == 'hard skill':
+            if self.predict_skill(keyword).lower() == "hard skill":
                 hard_skills.append(keyword)
-        
-        print(hard_skills)
+
         matched_keywords = set()
 
         score = 0
