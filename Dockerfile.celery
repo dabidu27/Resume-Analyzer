@@ -1,0 +1,7 @@
+FROM resume_analyzer-base
+
+WORKDIR /resume_analyzer
+
+COPY . .
+
+CMD ["celery", "-A", "resume_analyzer", "worker", "-l", "info"]

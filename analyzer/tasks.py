@@ -18,14 +18,24 @@ def run_resume_analysis(self, analysis_id):
     analysis.status = "PROCESSING"
     analysis.save()
 
-    pdfParser = PdfParser(analysis.resume_file)
-    analysis.resume_text = pdfParser.extract_text()
+    try:
+        pdfParser = PdfParser(analysis.resume_file)
+        analysis.resume_text = pdfParser.extract_text()
 
-    resumeAnalyzer = ResumeAnalyzerTool(analysis.resume_text, analysis.job_text)
+        resumeAnalyzer = ResumeAnalyzerTool(analysis.resume_text, analysis.job_text)
 
-    match_score, matched_keywords = resumeAnalyzer.analyze_resume()
+        match_score, matched_keywords = resumeAnalyzer.analyze_resume()
 
-    analysis.match_score = match_score
-    analysis.matched_keywords = matched_keywords
-    analysis.status = "COMPLETED"
-    analysis.save()
+        analysis.match_score = match_score
+        analysis.matched_keywords = matched_keywords
+        analysis.status = "COMPLETED"
+        analysis.save()
+
+    except Exception as exc:
+
+        analysis.status = "FAILURE"
+        analysis.save()
+        raise exc
+
+    # the return value returned by a background task is stored by celery in django_celery_results
+    return {"analysis_id": analysis.id, "analysis_status": analysis.status}

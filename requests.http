@@ -224,3 +224,6 @@ Additional benefits may vary depending on the country where you work and the nat
 GET http://127.0.0.1:8000/analyze/13/
 Authorization: Token d0b07ca9f6f355cb63e7d4017cc804dc9c836122
 
+### Get task status
+GET http://127.0.0.1:8000/task/status/aaf387a7-57d8-4de7-90ba-732dfe531201/
+Authorization: Token d0b07ca9f6f355cb63e7d4017cc804dc9c836122

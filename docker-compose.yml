@@ -1,0 +1,26 @@
+services:
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+  django:
+    build:
+      context: .
+      dockerfile: Dockerfile.django
+    volumes:
+      - .:/resume_analyzer
+    depends_on:
+      - redis
+    ports:
+      - "8000:8000"
+
+  celery:
+    build:
+      context: .
+      dockerfile: Dockerfile.celery
+    volumes:
+      - .:/resume_analyzer
+    depends_on:
+      - redis
+      - django
