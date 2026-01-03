@@ -8,6 +8,7 @@ from .views import (
     JobDescriptionUploadView,
     AnalyzeResumeView,
     TaskStatusView,
+    LogoutView,
 )
 from rest_framework.authtoken.views import obtain_auth_token
 
@@ -25,4 +26,5 @@ urlpatterns = [
     path("task/status/<str:task_id>/", TaskStatusView.as_view()),
     path("login/", obtain_auth_token),
     path("register/", RegistrationView.as_view()),
+    path("logout/", LogoutView.as_view()),
 ]

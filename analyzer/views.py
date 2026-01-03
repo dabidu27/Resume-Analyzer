@@ -188,3 +188,11 @@ class RegistrationView(CreateAPIView):
     permission_classes = [
         AllowAny
     ]  # we override the isAuthenticated global permission because registration has to be public
+
+
+class LogoutView(APIView):
+
+    def post(self, request):
+
+        request.user.auth_token.delete()
+        return Response({"message": "Logged out"}, status=http_status.HTTP_200_OK)
