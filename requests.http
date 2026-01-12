@@ -78,7 +78,7 @@ Authorization: Token d0b07ca9f6f355cb63e7d4017cc804dc9c836122
 
 ### Upload resume PDF
 POST http://127.0.0.1:8000/upload/resume/
-Authorization: Token d0b07ca9f6f355cb63e7d4017cc804dc9c836122
+Authorization: Token 26ef2d095eb8e955b25b982d56715717be91acf1
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
@@ -90,8 +90,8 @@ Content-Type: application/pdf
 
 ### Upload Job Description
 
-POST http://127.0.0.1:8000/upload/job/12/
-Authorization: Token d0b07ca9f6f355cb63e7d4017cc804dc9c836122
+POST http://127.0.0.1:8000/upload/job/14/
+Authorization: Token 26ef2d095eb8e955b25b982d56715717be91acf1
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
 
 ------WebKitFormBoundary
@@ -157,65 +157,87 @@ Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
 ------WebKitFormBoundary
 Content-Disposition: form-data; name="job_text"
 
-What You'll Do:
-
-    Deliver features with needed quality & timelines
-    Design features & solutions taking into account future usage & all other constraints
-    Improve solution quality
-    Provide estimations for features delivery with required accuracy
-    Participate in design and code review
-    Integrate with internal and external services
-    Monitor efficiency and performance
-    Support and develop multiple projects, depending on team
-    Troubleshoot various project errors & issues
-    When needed, write clear & cohesive technical specification
-    Write automated tests to ensure high quality of work
 
 
-Who You Are:
+Project description
 
-    2+ Years of experience
-    Ability to work independently and dig into a problem
-    Ability to work according to agreed deadlines
-    Ability to write clear, self-documented code
-    Basic data structures and algorithms, time-space complexity
-    Basic Network understanding (HTTP - is a must)
-    Decent Python 3 knowledge, core concepts and low-level implementation
-    Good written communication skills in English
-    Experience in developing REST APIs (Django, DRF, preferably)
-    Experience in devising feature design, producing quality documentation & decomposition with estimation
-    Experience using continuous integration and automation processes
-    Experience with relational databases (preferably PostgreSQL)
-    Experience with Unix systems
-    Knowledge of design patterns & principles (OOP, SOLID)
-    Passion for writing maintainable tests (unit, functional, end-to-end, mocks)
+The project is a rapidly growing engagement with a solid leader in the FinTech industry developing software solutions for trading, risk management and data processing. Join our Development Center in Luxoft Romania and become a member of our open minded, progressive and professional team. The software development is based on SAFe/Scrum methodology and uses Continuous Integration/Continuous Deployment processes supported by the adoption of DevOps, best engineering principles and XP practices like TDD and BDD. You will have a chance to grow your technical and soft skills, grow professionally and build a thorough expertise of the industry of our client. On top of attractive salary and benefits package, Luxoft will invest into your professional training including business domain knowledge, and allow you to grow your professional career.
+
+Our client software platform is used by the world's leading investment banks, asset managers, hedge funds, commodity houses and corporations to price, analyze and manage their derivative exposures for foreign exchange, interest rate, equity, commodity, inflation and credit derivatives.
 
 
-We acknowledge that many candidates may not meet every single role requirement listed above. If your experience looks a little different from our requirements but you believe that you can still bring value to the role, we’d love to see your application!
+How we work:
 
-We acknowledge that many candidates may not meet every single role requirement listed above. If your experience looks a little different from our requirements but you believe that you can still bring value to the role, we’d love to see your application!
+- The development processes are completely Agile. We are implementing SAFe, the most widely used scaling agile framework
 
-Who We Are:
+- You will be deeply involved in controlling the development workflow by defining, planning, building, testing and deploying the new solution functionalities
 
-Criteo is a leader in commerce media, helping brands, agencies, and publishers create meaningful consumer connections through AI-powered advertising solutions. We’re shaping a more open and sustainable digital future for advertising.
+- Once every 10 weeks the new business requirements are provided by the clients and development teams clarify, estimate and plan the work needed for the next period
 
-At Criteo, our culture is as unique as it is diverse. From our offices across the globe or from the comfort of home, our 3,600 Criteos collaborate together to build an open, impactful, and forward-thinking environment.
+- Our strong focus is on building high quality software by investing in Continuous Integration, Continuous Deployment, multi-tier testing, code quality, Non Functional Requirements etc.
 
-We foster a workplace where everyone is valued, and employment decisions are based solely on skills, qualifications, and business needs—never on non-job-related factors or legally protected characteristics.
+- The results of your work will be used by the most important organizations in the Investment Banking industry
 
-What We Offer:
+- Every 4 Sprints you will have the chance to work on completely innovative ideas using any cutting edge technologies or frameworks for a whole Sprint
 
-🏢 Ways of working – Our hybrid model blends home with in-office experiences, making space for both.
+- We are investing constantly in your professional, business domain and personal development by offering career path guidance and access to a wide variety of trainings.
 
-📈 Grow with us – Learning, mentorship & career development programs.
+- You will be supported by our technical mentors, agile coaches, pair working with your colleagues and will benefit on a friendly atmosphere and a dedicated space for games and relaxation
 
-💪 Your wellbeing matters – Health benefits, wellness perks & mental health support.
+Responsibilities
 
-🤝 A team that cares – Diverse, inclusive, and globally connected.
+The candidate will work in development team closely with the Paris and Bucharest consultancy teams to develop new functionality, rapidly solve problems and enhance existing aspects of the application.
 
-💸 Fair pay & perks – Attractive salary, with performance-based rewards and family-friendly policies, plus the potential for equity depending on role and level.
+The main purpose is to develop applications in order to integrate with external financial providers and platforms and to model the functional flows involved in the communication between the Client's solution and these external systems.
 
-Additional benefits may vary depending on the country where you work and the nature of your employment with Criteo.
+There might be cases when the candidate might go to Paris to work on-site or for training for 1-2 weeks period.
+
+Skills
+
+Must have
+
+Mandatory Computer Science Faculty / Cybernetics / Mathematics / Informatics graduated
+
+Java
+
+Dependency Injection/ Inversion of Control (Spring or JBoss)
+
+Unit and Mock Testing (JUnit, Mockito, Arquillian, Cucumber)
+
+Java Message Service (JMS)
+
+Web Services (JAX-RS, JAX-WS)
+
+Strong understanding of Design and Architectural Patterns
+
+Apache Maven
+
+Continuous Integration tools (Jenkins or similar)
+
+Linux operating system
+
+Stash: GIT Repository Management
+
+Spoken English language is a must
+
+Nice to have
+
+Apache Camel
+
+Enterprise Integration Patterns
+
+Java Architecture for XML Binding (JAXB)
+
+XML Transformations (XSLT, XSD, DTD)
+
+FitNesse
+
+Drools
+
+Agile Methodologies (SCRUM and Kanban)
+
+Additional knowledge of financial products is a plus
+
 
 ------WebKitFormBoundary--
 
